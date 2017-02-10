@@ -6,9 +6,9 @@ import addComponent from 'fs-addcomponent'
 import Loading from './Loading/Loading'
 let key = null;
 export default {
-    show: ()=> {
+    show: (props = {})=> {
         if (key == null)
-            key = addComponent.add(<Loading />)
+            key = addComponent.add(<Loading {...props}/>)
     },
     hide: ()=> {
         if (key != null) {
