@@ -2,16 +2,15 @@
  * Created by dxc on 2016/11/18.
  */
 import React, {Component, PropTypes} from 'react';
-import {Block} from 'fs-flex'
+import Block from 'fs-flex'
 import  '../../../assets/LoadingIcon.less'
 export default class LoadingIcon extends Component {
     render() {
-        const {ratio}=this.props;
         const circle = {
-            w: 7 * ratio,
-            h: 7 * ratio
+            w: 7,
+            h: 7
         };
-        return <Block className="spinner" w={30*ratio} h={30*ratio}>
+        return <Block className="spinner" w={30} h={30}>
             <Block className="spinner_container container1">
                 <Block className="circle1" {...circle} />
                 <Block className="circle2" {...circle} />
