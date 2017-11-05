@@ -35,41 +35,45 @@ webpackJsonp([0],[
 	
 	
 	var Simple = function (_Component) {
-	    _inherits(Simple, _Component);
+	  _inherits(Simple, _Component);
 	
-	    function Simple() {
-	        var _temp, _this, _ret;
+	  function Simple() {
+	    var _temp, _this, _ret;
 	
-	        _classCallCheck(this, Simple);
+	    _classCallCheck(this, Simple);
 	
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	            args[_key] = arguments[_key];
-	        }
-	
-	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
-	            show: false
-	        }, _temp), _possibleConstructorReturn(_this, _ret);
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
 	    }
 	
-	    Simple.prototype.onShow = function onShow() {
-	        var me = this;
-	        me.setState({ show: true });
-	    };
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _Component.call.apply(_Component, [this].concat(args))), _this), _this.state = {
+	      show: false
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	  }
 	
-	    Simple.prototype.render = function render() {
-	        return _react2.default.createElement(
-	            'div',
-	            { style: { height: 300, padding: 20 } },
-	            _react2.default.createElement(
-	                'div',
-	                { onClick: this.onShow.bind(this) },
-	                '\u70B9\u51FB\u663E\u793A'
-	            ),
-	            _react2.default.createElement(_fsLoading.Loading, { isShow: this.state.show })
-	        );
-	    };
+	  Simple.prototype.onShow = function onShow() {
+	    var _this2 = this;
 	
-	    return Simple;
+	    this.setState({ show: true });
+	    setTimeout(function () {
+	      _this2.setState({ show: false });
+	    }, 2000);
+	  };
+	
+	  Simple.prototype.render = function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { style: { height: 300, padding: 20 } },
+	      _react2.default.createElement(
+	        'div',
+	        { onClick: this.onShow.bind(this) },
+	        '\u70B9\u51FB\u663E\u793A'
+	      ),
+	      _react2.default.createElement(_fsLoading.Loading, { isShow: this.state.show })
+	    );
+	  };
+	
+	  return Simple;
 	}(_react.Component);
 	
 	_reactDom2.default.render(_react2.default.createElement(Simple, null), document.getElementById('__react-content'));

@@ -53,7 +53,7 @@
 /******/ 	// "0" means "already loaded"
 /******/ 	// Array means "loading", array contains callbacks
 /******/ 	var installedChunks = {
-/******/ 		2:0
+/******/ 		3:0
 /******/ 	};
 /******/
 /******/ 	// The require function
@@ -99,7 +99,7 @@
 /******/ 			script.charset = 'utf-8';
 /******/ 			script.async = true;
 /******/
-/******/ 			script.src = __webpack_require__.p + "" + chunkId + "." + ({"0":"component","1":"simple"}[chunkId]||chunkId) + ".js";
+/******/ 			script.src = __webpack_require__.p + "" + chunkId + "." + ({"0":"component","1":"progress","2":"simple"}[chunkId]||chunkId) + ".js";
 /******/ 			head.appendChild(script);
 /******/ 		}
 /******/ 	};
@@ -1337,7 +1337,7 @@
 
 /***/ }),
 /* 16 */
-[200, 7],
+[204, 7],
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6920,7 +6920,7 @@
 
 /***/ }),
 /* 56 */
-[200, 41],
+[204, 41],
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21635,7 +21635,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	
 	var _react = __webpack_require__(2);
@@ -21650,6 +21650,16 @@
 	
 	var _LoadingIcon2 = _interopRequireDefault(_LoadingIcon);
 	
+	var _inobounce = __webpack_require__(199);
+	
+	var _inobounce2 = _interopRequireDefault(_inobounce);
+	
+	var _nprogress = __webpack_require__(200);
+	
+	var _nprogress2 = _interopRequireDefault(_nprogress);
+	
+	__webpack_require__(201);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
@@ -21663,47 +21673,106 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 	
 	
+	console.log(_nprogress2.default);
+	window.NProgress = _nprogress2.default;
+	
 	var Loading = function (_Component) {
-	    _inherits(Loading, _Component);
+	  _inherits(Loading, _Component);
 	
-	    function Loading() {
-	        _classCallCheck(this, Loading);
+	  function Loading() {
+	    _classCallCheck(this, Loading);
 	
-	        return _possibleConstructorReturn(this, _Component.apply(this, arguments));
+	    return _possibleConstructorReturn(this, _Component.apply(this, arguments));
+	  }
+	
+	  //渲染前调用一次，这个时候DOM结构还没有渲染。fv
+	  Loading.prototype.noScroll = function noScroll() {
+	    if (this.oldOverflow != 'hidden') {
+	      document.body.style.overflow = 'hidden';
 	    }
+	    _inobounce2.default.enable();
+	  };
 	
-	    Loading.prototype.render = function render() {
-	        var _props = this.props,
-	            _props$isShow = _props.isShow,
-	            isShow = _props$isShow === undefined ? true : _props$isShow,
-	            _props$title = _props.title,
-	            title = _props$title === undefined ? '数据加载中' : _props$title;
+	  Loading.prototype.scroll = function scroll() {
+	    document.body.style.overflow = this.oldOverflow;
+	    _inobounce2.default.disable();
+	  };
 	
-	        if (!isShow) {
-	            return null;
-	        }
-	        return _react2.default.createElement(
-	            _fsFlex2.default,
-	            { style: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1500 }, j: 'c', a: 'c' },
-	            _react2.default.createElement(
-	                _fsFlex2.default,
-	                { w: 190, h: 108, bc: 'rgba(1,1,1,0.6)',
-	                    s: { borderRadius: 5, boxSizing: "border-box" }, a: 'c', vf: true, p: 15 },
-	                _react2.default.createElement(
-	                    _fsFlex2.default,
-	                    { f: '1', w: 30, mt: 10 },
-	                    _react2.default.createElement(_LoadingIcon2.default, null)
-	                ),
-	                _react2.default.createElement(
-	                    _fsFlex2.default,
-	                    { fs: 14, fc: '#fff' },
-	                    title
-	                )
-	            )
-	        );
-	    };
+	  Loading.prototype.open = function open() {
+	    _nprogress2.default.start();
+	    this.noScroll();
+	  };
 	
-	    return Loading;
+	  Loading.prototype.close = function close() {
+	    _nprogress2.default.done();
+	    this.scroll();
+	  };
+	  // 渲染前调用一次，这个时候DOM结构还没有渲染
+	
+	
+	  Loading.prototype.componentWillMount = function componentWillMount() {
+	    this.oldOverflow = document.body.style.overflow;
+	    var _props$isShow = this.props.isShow,
+	        isShow = _props$isShow === undefined ? true : _props$isShow;
+	
+	    if (isShow) {
+	      this.open();
+	    }
+	  };
+	  // 初始化渲染不会调用，在接收到新的props时，会调用这个方法。
+	
+	
+	  Loading.prototype.componentWillReceiveProps = function componentWillReceiveProps(props) {
+	    var _props$isShow2 = props.isShow,
+	        isShow = _props$isShow2 === undefined ? true : _props$isShow2;
+	
+	    if (isShow) {
+	      this.open();
+	    } else {
+	      this.close();
+	    }
+	  };
+	
+	  Loading.prototype.componentWillUnmount = function componentWillUnmount() {
+	    this.close();
+	  };
+	
+	  Loading.prototype.render = function render() {
+	    var _props = this.props,
+	        _props$isShow3 = _props.isShow,
+	        isShow = _props$isShow3 === undefined ? true : _props$isShow3,
+	        _props$title = _props.title,
+	        title = _props$title === undefined ? '数据加载中' : _props$title,
+	        _props$mode = _props.mode,
+	        mode = _props$mode === undefined ? 'icon' : _props$mode;
+	
+	    if (!isShow) {
+	      return null;
+	    }
+	    if (mode === 'progress') {
+	      return _react2.default.createElement(_fsFlex2.default, { bc: '#fff', style: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1500 }, j: 'c', a: 'c' });
+	    }
+	    return _react2.default.createElement(
+	      _fsFlex2.default,
+	      { style: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1500 }, j: 'c', a: 'c' },
+	      _react2.default.createElement(
+	        _fsFlex2.default,
+	        { w: 190, h: 108, bc: 'rgba(1,1,1,0.6)', s: { borderRadius: 5, boxSizing: 'border-box' }, a: 'c', vf: true, p: 15 },
+	        _react2.default.createElement(
+	          _fsFlex2.default,
+	          { f: '1', w: 30, mt: 10 },
+	          _react2.default.createElement(_LoadingIcon2.default, null)
+	        ),
+	        _react2.default.createElement(
+	          _fsFlex2.default,
+	          { fs: 14, fc: '#fff' },
+	          title
+	        )
+	      )
+	    );
+	  };
+	
+	  return Loading;
 	}(_react.Component);
 	
 	exports.default = Loading;
@@ -22170,8 +22239,620 @@
 /***/ }),
 /* 198 */
 195,
-/* 199 */,
+/* 199 */
+/***/ (function(module, exports) {
+
+	/*! iNoBounce - v0.1.0
+	* https://github.com/lazd/iNoBounce/
+	* Copyright (c) 2013 Larry Davis <lazdnet@gmail.com>; Licensed BSD */
+	(function(global) {
+		// Stores the Y position where the touch started
+		var startY = 0;
+	
+		// Store enabled status
+		var enabled = false;
+	
+		var handleTouchmove = function(evt) {
+			// Get the element that was scrolled upon
+			var el = evt.target;
+	
+			// Check all parent elements for scrollability
+			while (el !== document.body && el !== document) {
+				// Get some style properties
+				var style = window.getComputedStyle(el);
+	
+				if (!style) {
+					// If we've encountered an element we can't compute the style for, get out
+					break;
+				}
+	
+				// Ignore range input element
+				if (el.nodeName === 'INPUT' && el.getAttribute('type') === 'range') {
+					return;
+				}
+	
+				var scrolling = style.getPropertyValue('-webkit-overflow-scrolling');
+				var overflowY = style.getPropertyValue('overflow-y');
+				var height = parseInt(style.getPropertyValue('height'), 10);
+	
+				// Determine if the element should scroll
+				var isScrollable = scrolling === 'touch' && (overflowY === 'auto' || overflowY === 'scroll');
+				var canScroll = el.scrollHeight > el.offsetHeight;
+	
+				if (isScrollable && canScroll) {
+					// Get the current Y position of the touch
+					var curY = evt.touches ? evt.touches[0].screenY : evt.screenY;
+	
+					// Determine if the user is trying to scroll past the top or bottom
+					// In this case, the window will bounce, so we have to prevent scrolling completely
+					var isAtTop = (startY <= curY && el.scrollTop === 0);
+					var isAtBottom = (startY >= curY && el.scrollHeight - el.scrollTop === height);
+	
+					// Stop a bounce bug when at the bottom or top of the scrollable element
+					if (isAtTop || isAtBottom) {
+						evt.preventDefault();
+					}
+	
+					// No need to continue up the DOM, we've done our job
+					return;
+				}
+	
+				// Test the next parent
+				el = el.parentNode;
+			}
+	
+			// Stop the bouncing -- no parents are scrollable
+			evt.preventDefault();
+		};
+	
+		var handleTouchstart = function(evt) {
+			// Store the first Y position of the touch
+			startY = evt.touches ? evt.touches[0].screenY : evt.screenY;
+		};
+	
+		var enable = function() {
+			// Listen to a couple key touch events
+			window.addEventListener('touchstart', handleTouchstart, false);
+			window.addEventListener('touchmove', handleTouchmove, false);
+			enabled = true;
+		};
+	
+		var disable = function() {
+			// Stop listening
+			window.removeEventListener('touchstart', handleTouchstart, false);
+			window.removeEventListener('touchmove', handleTouchmove, false);
+			enabled = false;
+		};
+	
+		var isEnabled = function() {
+			return enabled;
+		};
+	
+		// Enable by default if the browser supports -webkit-overflow-scrolling
+		// Test this by setting the property with JavaScript on an element that exists in the DOM
+		// Then, see if the property is reflected in the computed style
+		var testDiv = document.createElement('div');
+		document.documentElement.appendChild(testDiv);
+		testDiv.style.WebkitOverflowScrolling = 'touch';
+		var scrollSupport = 'getComputedStyle' in window && window.getComputedStyle(testDiv)['-webkit-overflow-scrolling'] === 'touch';
+		document.documentElement.removeChild(testDiv);
+	
+		if (scrollSupport) {
+			enable();
+		}
+	
+		// A module to support enabling/disabling iNoBounce
+		var iNoBounce = {
+			enable: enable,
+			disable: disable,
+			isEnabled: isEnabled
+		};
+	
+		if (typeof module !== 'undefined' && module.exports) {
+			// Node.js Support
+			module.exports = iNoBounce;
+		}
+		if (typeof global.define === 'function') {
+			// AMD Support
+			(function(define) {
+				define('iNoBounce', [], function() { return iNoBounce; });
+			}(global.define));
+		}
+		else {
+			// Browser support
+			global.iNoBounce = iNoBounce;
+		}
+	}(this));
+
+
+/***/ }),
 /* 200 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/* NProgress, (c) 2013, 2014 Rico Sta. Cruz - http://ricostacruz.com/nprogress
+	 * @license MIT */
+	
+	;(function(root, factory) {
+	
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports === 'object') {
+	    module.exports = factory();
+	  } else {
+	    root.NProgress = factory();
+	  }
+	
+	})(this, function() {
+	  var NProgress = {};
+	
+	  NProgress.version = '0.2.0';
+	
+	  var Settings = NProgress.settings = {
+	    minimum: 0.08,
+	    easing: 'ease',
+	    positionUsing: '',
+	    speed: 200,
+	    trickle: true,
+	    trickleRate: 0.02,
+	    trickleSpeed: 800,
+	    showSpinner: true,
+	    barSelector: '[role="bar"]',
+	    spinnerSelector: '[role="spinner"]',
+	    parent: 'body',
+	    template: '<div class="bar" role="bar"><div class="peg"></div></div><div class="spinner" role="spinner"><div class="spinner-icon"></div></div>'
+	  };
+	
+	  /**
+	   * Updates configuration.
+	   *
+	   *     NProgress.configure({
+	   *       minimum: 0.1
+	   *     });
+	   */
+	  NProgress.configure = function(options) {
+	    var key, value;
+	    for (key in options) {
+	      value = options[key];
+	      if (value !== undefined && options.hasOwnProperty(key)) Settings[key] = value;
+	    }
+	
+	    return this;
+	  };
+	
+	  /**
+	   * Last number.
+	   */
+	
+	  NProgress.status = null;
+	
+	  /**
+	   * Sets the progress bar status, where `n` is a number from `0.0` to `1.0`.
+	   *
+	   *     NProgress.set(0.4);
+	   *     NProgress.set(1.0);
+	   */
+	
+	  NProgress.set = function(n) {
+	    var started = NProgress.isStarted();
+	
+	    n = clamp(n, Settings.minimum, 1);
+	    NProgress.status = (n === 1 ? null : n);
+	
+	    var progress = NProgress.render(!started),
+	        bar      = progress.querySelector(Settings.barSelector),
+	        speed    = Settings.speed,
+	        ease     = Settings.easing;
+	
+	    progress.offsetWidth; /* Repaint */
+	
+	    queue(function(next) {
+	      // Set positionUsing if it hasn't already been set
+	      if (Settings.positionUsing === '') Settings.positionUsing = NProgress.getPositioningCSS();
+	
+	      // Add transition
+	      css(bar, barPositionCSS(n, speed, ease));
+	
+	      if (n === 1) {
+	        // Fade out
+	        css(progress, { 
+	          transition: 'none', 
+	          opacity: 1 
+	        });
+	        progress.offsetWidth; /* Repaint */
+	
+	        setTimeout(function() {
+	          css(progress, { 
+	            transition: 'all ' + speed + 'ms linear', 
+	            opacity: 0 
+	          });
+	          setTimeout(function() {
+	            NProgress.remove();
+	            next();
+	          }, speed);
+	        }, speed);
+	      } else {
+	        setTimeout(next, speed);
+	      }
+	    });
+	
+	    return this;
+	  };
+	
+	  NProgress.isStarted = function() {
+	    return typeof NProgress.status === 'number';
+	  };
+	
+	  /**
+	   * Shows the progress bar.
+	   * This is the same as setting the status to 0%, except that it doesn't go backwards.
+	   *
+	   *     NProgress.start();
+	   *
+	   */
+	  NProgress.start = function() {
+	    if (!NProgress.status) NProgress.set(0);
+	
+	    var work = function() {
+	      setTimeout(function() {
+	        if (!NProgress.status) return;
+	        NProgress.trickle();
+	        work();
+	      }, Settings.trickleSpeed);
+	    };
+	
+	    if (Settings.trickle) work();
+	
+	    return this;
+	  };
+	
+	  /**
+	   * Hides the progress bar.
+	   * This is the *sort of* the same as setting the status to 100%, with the
+	   * difference being `done()` makes some placebo effect of some realistic motion.
+	   *
+	   *     NProgress.done();
+	   *
+	   * If `true` is passed, it will show the progress bar even if its hidden.
+	   *
+	   *     NProgress.done(true);
+	   */
+	
+	  NProgress.done = function(force) {
+	    if (!force && !NProgress.status) return this;
+	
+	    return NProgress.inc(0.3 + 0.5 * Math.random()).set(1);
+	  };
+	
+	  /**
+	   * Increments by a random amount.
+	   */
+	
+	  NProgress.inc = function(amount) {
+	    var n = NProgress.status;
+	
+	    if (!n) {
+	      return NProgress.start();
+	    } else {
+	      if (typeof amount !== 'number') {
+	        amount = (1 - n) * clamp(Math.random() * n, 0.1, 0.95);
+	      }
+	
+	      n = clamp(n + amount, 0, 0.994);
+	      return NProgress.set(n);
+	    }
+	  };
+	
+	  NProgress.trickle = function() {
+	    return NProgress.inc(Math.random() * Settings.trickleRate);
+	  };
+	
+	  /**
+	   * Waits for all supplied jQuery promises and
+	   * increases the progress as the promises resolve.
+	   *
+	   * @param $promise jQUery Promise
+	   */
+	  (function() {
+	    var initial = 0, current = 0;
+	
+	    NProgress.promise = function($promise) {
+	      if (!$promise || $promise.state() === "resolved") {
+	        return this;
+	      }
+	
+	      if (current === 0) {
+	        NProgress.start();
+	      }
+	
+	      initial++;
+	      current++;
+	
+	      $promise.always(function() {
+	        current--;
+	        if (current === 0) {
+	            initial = 0;
+	            NProgress.done();
+	        } else {
+	            NProgress.set((initial - current) / initial);
+	        }
+	      });
+	
+	      return this;
+	    };
+	
+	  })();
+	
+	  /**
+	   * (Internal) renders the progress bar markup based on the `template`
+	   * setting.
+	   */
+	
+	  NProgress.render = function(fromStart) {
+	    if (NProgress.isRendered()) return document.getElementById('nprogress');
+	
+	    addClass(document.documentElement, 'nprogress-busy');
+	    
+	    var progress = document.createElement('div');
+	    progress.id = 'nprogress';
+	    progress.innerHTML = Settings.template;
+	
+	    var bar      = progress.querySelector(Settings.barSelector),
+	        perc     = fromStart ? '-100' : toBarPerc(NProgress.status || 0),
+	        parent   = document.querySelector(Settings.parent),
+	        spinner;
+	    
+	    css(bar, {
+	      transition: 'all 0 linear',
+	      transform: 'translate3d(' + perc + '%,0,0)'
+	    });
+	
+	    if (!Settings.showSpinner) {
+	      spinner = progress.querySelector(Settings.spinnerSelector);
+	      spinner && removeElement(spinner);
+	    }
+	
+	    if (parent != document.body) {
+	      addClass(parent, 'nprogress-custom-parent');
+	    }
+	
+	    parent.appendChild(progress);
+	    return progress;
+	  };
+	
+	  /**
+	   * Removes the element. Opposite of render().
+	   */
+	
+	  NProgress.remove = function() {
+	    removeClass(document.documentElement, 'nprogress-busy');
+	    removeClass(document.querySelector(Settings.parent), 'nprogress-custom-parent');
+	    var progress = document.getElementById('nprogress');
+	    progress && removeElement(progress);
+	  };
+	
+	  /**
+	   * Checks if the progress bar is rendered.
+	   */
+	
+	  NProgress.isRendered = function() {
+	    return !!document.getElementById('nprogress');
+	  };
+	
+	  /**
+	   * Determine which positioning CSS rule to use.
+	   */
+	
+	  NProgress.getPositioningCSS = function() {
+	    // Sniff on document.body.style
+	    var bodyStyle = document.body.style;
+	
+	    // Sniff prefixes
+	    var vendorPrefix = ('WebkitTransform' in bodyStyle) ? 'Webkit' :
+	                       ('MozTransform' in bodyStyle) ? 'Moz' :
+	                       ('msTransform' in bodyStyle) ? 'ms' :
+	                       ('OTransform' in bodyStyle) ? 'O' : '';
+	
+	    if (vendorPrefix + 'Perspective' in bodyStyle) {
+	      // Modern browsers with 3D support, e.g. Webkit, IE10
+	      return 'translate3d';
+	    } else if (vendorPrefix + 'Transform' in bodyStyle) {
+	      // Browsers without 3D support, e.g. IE9
+	      return 'translate';
+	    } else {
+	      // Browsers without translate() support, e.g. IE7-8
+	      return 'margin';
+	    }
+	  };
+	
+	  /**
+	   * Helpers
+	   */
+	
+	  function clamp(n, min, max) {
+	    if (n < min) return min;
+	    if (n > max) return max;
+	    return n;
+	  }
+	
+	  /**
+	   * (Internal) converts a percentage (`0..1`) to a bar translateX
+	   * percentage (`-100%..0%`).
+	   */
+	
+	  function toBarPerc(n) {
+	    return (-1 + n) * 100;
+	  }
+	
+	
+	  /**
+	   * (Internal) returns the correct CSS for changing the bar's
+	   * position given an n percentage, and speed and ease from Settings
+	   */
+	
+	  function barPositionCSS(n, speed, ease) {
+	    var barCSS;
+	
+	    if (Settings.positionUsing === 'translate3d') {
+	      barCSS = { transform: 'translate3d('+toBarPerc(n)+'%,0,0)' };
+	    } else if (Settings.positionUsing === 'translate') {
+	      barCSS = { transform: 'translate('+toBarPerc(n)+'%,0)' };
+	    } else {
+	      barCSS = { 'margin-left': toBarPerc(n)+'%' };
+	    }
+	
+	    barCSS.transition = 'all '+speed+'ms '+ease;
+	
+	    return barCSS;
+	  }
+	
+	  /**
+	   * (Internal) Queues a function to be executed.
+	   */
+	
+	  var queue = (function() {
+	    var pending = [];
+	    
+	    function next() {
+	      var fn = pending.shift();
+	      if (fn) {
+	        fn(next);
+	      }
+	    }
+	
+	    return function(fn) {
+	      pending.push(fn);
+	      if (pending.length == 1) next();
+	    };
+	  })();
+	
+	  /**
+	   * (Internal) Applies css properties to an element, similar to the jQuery 
+	   * css method.
+	   *
+	   * While this helper does assist with vendor prefixed property names, it 
+	   * does not perform any manipulation of values prior to setting styles.
+	   */
+	
+	  var css = (function() {
+	    var cssPrefixes = [ 'Webkit', 'O', 'Moz', 'ms' ],
+	        cssProps    = {};
+	
+	    function camelCase(string) {
+	      return string.replace(/^-ms-/, 'ms-').replace(/-([\da-z])/gi, function(match, letter) {
+	        return letter.toUpperCase();
+	      });
+	    }
+	
+	    function getVendorProp(name) {
+	      var style = document.body.style;
+	      if (name in style) return name;
+	
+	      var i = cssPrefixes.length,
+	          capName = name.charAt(0).toUpperCase() + name.slice(1),
+	          vendorName;
+	      while (i--) {
+	        vendorName = cssPrefixes[i] + capName;
+	        if (vendorName in style) return vendorName;
+	      }
+	
+	      return name;
+	    }
+	
+	    function getStyleProp(name) {
+	      name = camelCase(name);
+	      return cssProps[name] || (cssProps[name] = getVendorProp(name));
+	    }
+	
+	    function applyCss(element, prop, value) {
+	      prop = getStyleProp(prop);
+	      element.style[prop] = value;
+	    }
+	
+	    return function(element, properties) {
+	      var args = arguments,
+	          prop, 
+	          value;
+	
+	      if (args.length == 2) {
+	        for (prop in properties) {
+	          value = properties[prop];
+	          if (value !== undefined && properties.hasOwnProperty(prop)) applyCss(element, prop, value);
+	        }
+	      } else {
+	        applyCss(element, args[1], args[2]);
+	      }
+	    }
+	  })();
+	
+	  /**
+	   * (Internal) Determines if an element or space separated list of class names contains a class name.
+	   */
+	
+	  function hasClass(element, name) {
+	    var list = typeof element == 'string' ? element : classList(element);
+	    return list.indexOf(' ' + name + ' ') >= 0;
+	  }
+	
+	  /**
+	   * (Internal) Adds a class to an element.
+	   */
+	
+	  function addClass(element, name) {
+	    var oldList = classList(element),
+	        newList = oldList + name;
+	
+	    if (hasClass(oldList, name)) return; 
+	
+	    // Trim the opening space.
+	    element.className = newList.substring(1);
+	  }
+	
+	  /**
+	   * (Internal) Removes a class from an element.
+	   */
+	
+	  function removeClass(element, name) {
+	    var oldList = classList(element),
+	        newList;
+	
+	    if (!hasClass(element, name)) return;
+	
+	    // Replace the class name.
+	    newList = oldList.replace(' ' + name + ' ', ' ');
+	
+	    // Trim the opening and closing spaces.
+	    element.className = newList.substring(1, newList.length - 1);
+	  }
+	
+	  /**
+	   * (Internal) Gets a space separated list of the class names on the element. 
+	   * The list is wrapped with a single space on each end to facilitate finding 
+	   * matches within the list.
+	   */
+	
+	  function classList(element) {
+	    return (' ' + (element.className || '') + ' ').replace(/\s+/gi, ' ');
+	  }
+	
+	  /**
+	   * (Internal) Removes an element from the DOM.
+	   */
+	
+	  function removeElement(element) {
+	    element && element.parentNode && element.parentNode.removeChild(element);
+	  }
+	
+	  return NProgress;
+	});
+	
+
+
+/***/ }),
+/* 201 */
+195,
+/* 202 */,
+/* 203 */,
+/* 204 */
 /***/ (function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
