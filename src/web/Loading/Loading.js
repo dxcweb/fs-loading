@@ -6,7 +6,7 @@ import Block from 'fs-flex';
 import LoadingIcon from './LoadingIcon';
 import iNoBounce from 'inobounce';
 import NProgress from 'nprogress';
-import  '../../../assets/nprogress.less'
+import '../../../assets/nprogress.less';
 
 console.log(NProgress);
 window.NProgress = NProgress;
@@ -17,11 +17,17 @@ export default class Loading extends Component {
     if (this.oldOverflow != 'hidden') {
       document.body.style.overflow = 'hidden';
     }
-    iNoBounce.enable();
+    const { mode = 'icon' } = this.props;
+    if (mode === 'progress') {
+      iNoBounce.enable();
+    }
   }
   scroll() {
     document.body.style.overflow = this.oldOverflow;
-    iNoBounce.disable();
+    const { mode = 'icon' } = this.props;
+    if (mode === 'progress') {
+      iNoBounce.disable();
+    }
   }
   open() {
     NProgress.start();
