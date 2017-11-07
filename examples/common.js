@@ -21690,12 +21690,22 @@
 	    if (this.oldOverflow != 'hidden') {
 	      document.body.style.overflow = 'hidden';
 	    }
-	    _inobounce2.default.enable();
+	    var _props$mode = this.props.mode,
+	        mode = _props$mode === undefined ? 'icon' : _props$mode;
+	
+	    if (mode === 'progress') {
+	      _inobounce2.default.enable();
+	    }
 	  };
 	
 	  Loading.prototype.scroll = function scroll() {
 	    document.body.style.overflow = this.oldOverflow;
-	    _inobounce2.default.disable();
+	    var _props$mode2 = this.props.mode,
+	        mode = _props$mode2 === undefined ? 'icon' : _props$mode2;
+	
+	    if (mode === 'progress') {
+	      _inobounce2.default.disable();
+	    }
 	  };
 	
 	  Loading.prototype.open = function open() {
@@ -21743,8 +21753,8 @@
 	        isShow = _props$isShow3 === undefined ? true : _props$isShow3,
 	        _props$title = _props.title,
 	        title = _props$title === undefined ? '数据加载中' : _props$title,
-	        _props$mode = _props.mode,
-	        mode = _props$mode === undefined ? 'icon' : _props$mode;
+	        _props$mode3 = _props.mode,
+	        mode = _props$mode3 === undefined ? 'icon' : _props$mode3;
 	
 	    if (!isShow) {
 	      return null;
