@@ -1,15 +1,12 @@
 /**
  * Created by dxc on 2016/11/18.
  */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import Block from 'fs-flex';
 import LoadingIcon from './LoadingIcon';
 import iNoBounce from 'inobounce';
 import NProgress from 'nprogress';
 import '../../../assets/nprogress.less';
-
-console.log(NProgress);
-window.NProgress = NProgress;
 
 export default class Loading extends Component {
   //渲染前调用一次，这个时候DOM结构还没有渲染。fv
@@ -17,24 +14,25 @@ export default class Loading extends Component {
     if (this.oldOverflow != 'hidden') {
       document.body.style.overflow = 'hidden';
     }
-    const { mode = 'icon' } = this.props;
-    if (mode === 'progress') {
-      iNoBounce.enable();
-    }
+    iNoBounce.enable();
   }
   scroll() {
     document.body.style.overflow = this.oldOverflow;
-    const { mode = 'icon' } = this.props;
-    if (mode === 'progress') {
-      iNoBounce.disable();
-    }
+
+    iNoBounce.disable();
   }
   open() {
-    NProgress.start();
+    const { mode = 'icon' } = this.props;
+    if (mode === 'progress') {
+      NProgress.start();
+    }
     this.noScroll();
   }
   close() {
-    NProgress.done();
+    const { mode = 'icon' } = this.props;
+    if (mode === 'progress') {
+      NProgress.done();
+    }
     this.scroll();
   }
   // 渲染前调用一次，这个时候DOM结构还没有渲染
