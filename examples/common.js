@@ -21673,9 +21673,6 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 	
 	
-	console.log(_nprogress2.default);
-	window.NProgress = _nprogress2.default;
-	
 	var Loading = function (_Component) {
 	  _inherits(Loading, _Component);
 	
@@ -21690,31 +21687,32 @@
 	    if (this.oldOverflow != 'hidden') {
 	      document.body.style.overflow = 'hidden';
 	    }
-	    var _props$mode = this.props.mode,
-	        mode = _props$mode === undefined ? 'icon' : _props$mode;
-	
-	    if (mode === 'progress') {
-	      _inobounce2.default.enable();
-	    }
+	    _inobounce2.default.enable();
 	  };
 	
 	  Loading.prototype.scroll = function scroll() {
 	    document.body.style.overflow = this.oldOverflow;
-	    var _props$mode2 = this.props.mode,
-	        mode = _props$mode2 === undefined ? 'icon' : _props$mode2;
 	
-	    if (mode === 'progress') {
-	      _inobounce2.default.disable();
-	    }
+	    _inobounce2.default.disable();
 	  };
 	
 	  Loading.prototype.open = function open() {
-	    _nprogress2.default.start();
+	    var _props$mode = this.props.mode,
+	        mode = _props$mode === undefined ? 'icon' : _props$mode;
+	
+	    if (mode === 'progress') {
+	      _nprogress2.default.start();
+	    }
 	    this.noScroll();
 	  };
 	
 	  Loading.prototype.close = function close() {
-	    _nprogress2.default.done();
+	    var _props$mode2 = this.props.mode,
+	        mode = _props$mode2 === undefined ? 'icon' : _props$mode2;
+	
+	    if (mode === 'progress') {
+	      _nprogress2.default.done();
+	    }
 	    this.scroll();
 	  };
 	  // 渲染前调用一次，这个时候DOM结构还没有渲染
