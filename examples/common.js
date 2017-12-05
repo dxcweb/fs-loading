@@ -21673,6 +21673,8 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 	
 	
+	_inobounce2.default.disable();
+	
 	var Loading = function (_Component) {
 	  _inherits(Loading, _Component);
 	
