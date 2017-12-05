@@ -7,6 +7,7 @@ import LoadingIcon from './LoadingIcon';
 import iNoBounce from 'inobounce';
 import NProgress from 'nprogress';
 import '../../../assets/nprogress.less';
+iNoBounce.disable();
 
 export default class Loading extends Component {
   //渲染前调用一次，这个时候DOM结构还没有渲染。fv
